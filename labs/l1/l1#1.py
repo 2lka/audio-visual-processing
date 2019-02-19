@@ -2,7 +2,7 @@ from PIL import Image
 
 
 def resize_rows(image, new_size):
-    new_image = Image.new("RGB", (new_size, image.size[1]), (0, 0, 0))
+    new_image = Image.new('RGBA', (new_size, image.size[1]), (0, 0, 0, 0))
     pix = image.load()
     new_pix = new_image.load()
     for i in range(image.size[1]):
@@ -13,7 +13,7 @@ def resize_rows(image, new_size):
             power = new_size / image.size[0]
             while power and counter < new_size:
                 m = min(power, remainder)
-                new_pix[counter, i] = tuple(int(colour[k] * m + new_pix[counter, i][k]) for k in range(3))
+                new_pix[counter, i] = tuple(int(colour[k] * m + new_pix[counter, i][k]) for k in range(4))
                 power = power - m
                 remainder = remainder - m
                 if not remainder:
@@ -23,7 +23,7 @@ def resize_rows(image, new_size):
 
 
 def resize_columns(image, new_size):
-    new_image = Image.new("RGB", (image.size[0], new_size), (0, 0, 0))
+    new_image = Image.new('RGBA', (image.size[0], new_size), (0, 0, 0, 0))
     pix = image.load()
     new_pix = new_image.load()
     for i in range(image.size[0]):
@@ -34,7 +34,7 @@ def resize_columns(image, new_size):
             power = new_size / image.size[1]
             while power and counter < new_size:
                 m = min(power, remainder)
-                new_pix[i, counter] = tuple(int(colour[k] * m + new_pix[i, counter][k]) for k in range(3))
+                new_pix[i, counter] = tuple(int(colour[k] * m + new_pix[i, counter][k]) for k in range(4))
                 power = power - m
                 remainder = remainder - m
                 if not remainder:
@@ -49,7 +49,7 @@ def resize_image(image, new_size):
 
 image = Image.open('/home/dima/PycharmProjects/audio-visual-processing/labs/l1/test.bmp')
 image.show()
-M, N = 2, 1/3
+M, N = 3, 1/4
 
 Ms = tuple(int(M * image.size[i]) for i in range(2))
 Ks = tuple(int(N * Ms[i]) for i in range(2))
