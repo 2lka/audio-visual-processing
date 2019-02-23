@@ -1,45 +1,45 @@
 from PIL import Image
 
 
-def resize_rows(image, new_size):
-    new_image = Image.new('RGBA', (new_size, image.size[1]), (0, 0, 0, 0))
+def resize_rows(image, new_width):
+    new_image = Image.new(image.mode, (new_width, image.height))
     pix = image.load()
     new_pix = new_image.load()
-    for i in range(image.size[1]):
-        counter = 0
-        remainder = 1
-        for j in range(image.size[0]):
-            colour = pix[j, i]
-            power = new_size / image.size[0]
-            while power and counter < new_size:
-                m = min(power, remainder)
-                new_pix[counter, i] = tuple(int(colour[k] * m + new_pix[counter, i][k]) for k in range(4))
-                power = power - m
-                remainder = remainder - m
-                if not remainder:
-                    counter = counter + 1
-                    remainder = 1
+    for i in range(image.height):
+        j, k = 0, 0
+        jpower, kpower = new_width, image.width
+        while j < image.width and k < new_width:
+            mpower = min(jpower, kpower)
+            jpower -= mpower
+            kpower -= mpower
+            new_pix[k, i] = tuple(new_pix[k, i][l] + (mpower * pix[j, i][l]) // image.width for l in range(len(pix[j, i])))
+            if jpower == 0:
+                j += 1
+                jpower = new_width
+            if kpower == 0:
+                k += 1
+                kpower = image.width
     return new_image
 
 
-def resize_columns(image, new_size):
-    new_image = Image.new('RGBA', (image.size[0], new_size), (0, 0, 0, 0))
+def resize_columns(image, new_height):
+    new_image = Image.new(image.mode, (image.width, new_height))
     pix = image.load()
     new_pix = new_image.load()
-    for i in range(image.size[0]):
-        counter = 0
-        remainder = 1
-        for j in range(image.size[1]):
-            colour = pix[i, j]
-            power = new_size / image.size[1]
-            while power and counter < new_size:
-                m = min(power, remainder)
-                new_pix[i, counter] = tuple(int(colour[k] * m + new_pix[i, counter][k]) for k in range(4))
-                power = power - m
-                remainder = remainder - m
-                if not remainder:
-                    counter = counter + 1
-                    remainder = 1
+    for i in range(image.width):
+        j, k = 0, 0
+        jpower, kpower = new_height, image.height
+        while j < image.height and k < new_height:
+            mpower = min(jpower, kpower)
+            jpower -= mpower
+            kpower -= mpower
+            new_pix[i, k] = tuple(new_pix[i, k][l] + (mpower * pix[i, j][l]) // image.height for l in range(len(pix[i, j])))
+            if jpower == 0:
+                j += 1
+                jpower = new_height
+            if kpower == 0:
+                k += 1
+                kpower = image.height
     return new_image
 
 
@@ -47,10 +47,10 @@ def resize_image(image, new_size):
     return resize_rows(resize_columns(image, new_size[1]), new_size[0])
 
 
-image = Image.open('/home/dima/PycharmProjects/audio-visual-processing/labs/l1/test.bmp') #image.bmp
+image = Image.open('/home/dima/PycharmProjects/audio-visual-processing/labs/l1/test.bmp')  # image.bmp
 image.show()
-M, N = 3, 1/4
 
+M, N = 4, 1/3
 Ms = tuple(int(M * image.size[i]) for i in range(2))
 Ks = tuple(int(N * Ms[i]) for i in range(2))
 
