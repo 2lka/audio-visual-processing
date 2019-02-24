@@ -9,7 +9,7 @@ def myround(x):
         return 255
 
 
-image = Image.open('/home/dima/PycharmProjects/audio-visual-processing/labs/l2/image_changed.bmp')
+image = Image.open('image_changed.bmp')
 size = image.size
 new_image = Image.new(image.mode, size, 0)
 

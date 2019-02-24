@@ -47,7 +47,7 @@ def resize_image(image, new_size):
     return resize_rows(resize_columns(image, new_size[1]), new_size[0])
 
 
-image = Image.open('/home/dima/PycharmProjects/audio-visual-processing/labs/l1/test.bmp')  # image.bmp
+image = Image.open('test.bmp')  # image.bmp
 image.show()
 
 M, N = 4, 1/3
